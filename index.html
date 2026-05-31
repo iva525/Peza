@@ -110,8 +110,93 @@ input,textarea{
 <button onclick="toggleCart()">Закрыть</button>
 
 </div>
+<script>
+let cart=[];
 
-<!-- СЮДА ВСТАВЛЯЕШЬ SCRIPT ИЗ МОЕГО ПРЕДЫДУЩЕГО СООБЩЕНИЯ -->
+const names=[
+"Сочная Классика","Острая Пепперони","Четыре Сыра","Мясной Монстр",
+"Грибной Лес","Гавайская Взрыв","Морская Легенда","Овощной Бум",
+"Барбекю Бомба","Сырный Удар"
+];
+
+const descriptions=[
+"Свежая моцарелла, томатный соус и ароматные специи.",
+"Острая пепперони и двойной слой сыра.",
+"Четыре вида сыра на сливочной основе.",
+"Ветчина, бекон и фирменный BBQ соус.",
+"Отборные грибы и нежный сливочный соус.",
+"Сочная ветчина и сладкий ананас.",
+"Креветки и морской коктейль.",
+"Свежие овощи, оливки и кукуруза.",
+"Копчёные колбаски и соус барбекю.",
+"Максимум сыра и золотистая корочка."
+];
+
+for(let i=1;i<=90;i++){
+ let price=300+i*10;
+ let name=names[(i-1)%names.length]+" №"+i;
+ let desc=descriptions[(i-1)%descriptions.length];
+
+ document.getElementById('menu').innerHTML+=`
+ <div class="card">
+   <h3>${name}</h3>
+   <p>${desc}</p>
+   <b>${price} ₽</b><br><br>
+   <button onclick="addToCart('${name}',${price})">В корзину</button>
+ </div>`;
+}
+
+function addToCart(name,price){
+ if(cart.length>=20){
+   alert('Нельзя добавить больше 20 пицц!');
+   return;
+ }
+ cart.push({name,price});
+ renderCart();
+}
+
+function toggleCart(){
+ let p=document.getElementById('cartPanel');
+ p.style.display=p.style.display==='block'?'none':'block';
+}
+
+function renderCart(){
+ let total=0, html='';
+
+ cart.forEach((x,i)=>{
+   total+=x.price;
+   html += `${x.name} - ${x.price} ₽ <button onclick="removeItem(${i})">❌</button><br><br>`;
+ });
+
+ document.getElementById('items').innerHTML=html || 'Пусто';
+ document.getElementById('total').textContent=total;
+ document.getElementById('count').textContent=cart.length;
+}
+
+function removeItem(i){
+ cart.splice(i,1);
+ renderCart();
+}
+
+function pay(){
+ if(cart.length===0){
+   alert('Корзина пуста');
+   return;
+ }
+
+ alert('Оплата прошла успешно ✅');
+ cart=[];
+ renderCart();
+}
+
+function addReview(){
+ let t=document.getElementById('review').value;
+ if(!t) return;
+
+ document.getElementById('reviews').innerHTML += `<p>⭐ ${t}</p>`;
+ document.getElementById('review').value='';
+}
+</script>
 
 </body>
 </html>
