@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ПИКАРНЯ PRO</title>
+
+<style>
+body{
+ font-family:Arial;
+ margin:0;
+ background:#111;
+ color:white;
+}
+
+header{
+ background:#000;
+ padding:15px;
+ position:sticky;
+ top:0;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+ gap:12px;
+ padding:15px;
+}
+
+.card{
+ background:#222;
+ padding:12px;
+ border-radius:12px;
+}
+
+button{
+ background:#c00;
+ color:#fff;
+ border:none;
+ padding:8px 10px;
+ border-radius:8px;
+ cursor:pointer;
+}
+
+#cartPanel{
+ display:none;
+ position:fixed;
+ right:0;
+ top:0;
+ width:340px;
+ height:100%;
+ background:#000;
+ padding:10px;
+ overflow:auto;
+}
+
+input,textarea{
+ width:100%;
+ padding:8px;
+ margin:5px 0;
+ box-sizing:border-box;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>🍕 ПИКАРНЯ PRO</h2>
+<button onclick="toggleCart()">🛒 Корзина (<span id="count">0</span>)</button>
+</header>
+
+<div class="grid" id="menu"></div>
+
+<div id="cartPanel">
+
+<h2>🛒 Корзина</h2>
+<div id="items">Пусто</div>
+
+<h3>Итого: <span id="total">0</span> ₽</h3>
+
+<h2>💳 Оплата картой</h2>
+
+<input placeholder="Номер карты">
+<input placeholder="MM/YY">
+<input placeholder="CVV">
+
+<button onclick="pay()">Оплатить</button>
+
+<hr>
+
+<h2>⭐ Отзывы</h2>
+
+<textarea id="review"></textarea>
+
+<button onclick="addReview()">Добавить отзыв</button>
+
+<div id="reviews"></div>
+
+<hr>
+
+<h2>📞 Контакты</h2>
+
+<p>+7 (999) 777-88-99</p>
+<p>Работаем 24/7</p>
+
+<button onclick="toggleCart()">Закрыть</button>
+
+</div>
+
+<!-- СЮДА ВСТАВЛЯЕШЬ SCRIPT ИЗ МОЕГО ПРЕДЫДУЩЕГО СООБЩЕНИЯ -->
+
+</body>
+</html>
