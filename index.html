@@ -2,200 +2,287 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ПИКАРНЯ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pizza PRO+</title>
 
 <style>
 body{
- font-family:Arial;
- margin:0;
- background:#111;
- color:white;
+    margin:0;
+    font-family: Arial;
+    background:#0f0f0f;
+    color:#fff;
 }
 
+/* HEADER */
 header{
- background:#000;
- padding:15px;
- position:sticky;
- top:0;
- display:flex;
- justify-content:space-between;
- align-items:center;
+    background: linear-gradient(90deg,#e63946,#ff2e63);
+    padding:18px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+    animation: slideDown .5s ease;
 }
 
-.grid{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
- gap:12px;
- padding:15px;
+@keyframes slideDown{
+    from{transform:translateY(-40px);opacity:0}
+    to{transform:translateY(0);opacity:1}
 }
 
-.card{
- background:#222;
- padding:12px;
- border-radius:12px;
+.container{
+    display:flex;
+    gap:15px;
+    padding:15px;
+}
+
+/* BOXES */
+.box{
+    flex:1;
+    background:#1c1c1c;
+    border-radius:12px;
+    padding:12px;
+    animation: fadeIn .6s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:scale(0.97)}
+    to{opacity:1;transform:scale(1)}
+}
+
+.pizza{
+    background:#2a2a2a;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:10px;
+    transition:.2s;
+}
+.pizza:hover{
+    transform:scale(1.02);
 }
 
 button{
- background:#c00;
- color:#fff;
- border:none;
- padding:8px 10px;
- border-radius:8px;
- cursor:pointer;
+    background:#ff2e63;
+    border:none;
+    color:white;
+    padding:8px 10px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.2s;
+}
+button:hover{
+    transform:scale(1.05);
 }
 
-#cartPanel{
- display:none;
- position:fixed;
- right:0;
- top:0;
- width:340px;
- height:100%;
- background:#000;
- padding:10px;
- overflow:auto;
+/* CART */
+.cart-item{
+    display:flex;
+    justify-content:space-between;
+    background:#2a2a2a;
+    padding:6px;
+    border-radius:8px;
+    margin-bottom:6px;
 }
 
-input,textarea{
- width:100%;
- padding:8px;
- margin:5px 0;
- box-sizing:border-box;
+/* ORDER FORM */
+input{
+    width:100%;
+    padding:8px;
+    margin:5px 0;
+    border-radius:6px;
+    border:none;
+}
+
+/* ADMIN */
+.admin{
+    display:none;
+    background:#111;
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+}
+.small{
+    font-size:12px;
+    opacity:.7;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-<h2>🍕 ПИКАРНЯ</h2>
-<button onclick="toggleCart()">🛒 Корзина (<span id="count">0</span>)</button>
-</header>
+<header>🍕 PIZZA PRO+</header>
 
-<div class="grid" id="menu"></div>
+<div class="container">
 
-<div id="cartPanel">
+<!-- MENU -->
+<div class="box">
+<h3>Меню</h3>
 
-<h2>🛒 Корзина</h2>
-<div id="items">Пусто</div>
+<div class="pizza">
+<b>Фирменная</b>
+<p>Сыр, соус, тесто</p>
+<p>450₽</p>
+<button onclick="add('Фирменная',450)">В корзину</button>
+</div>
 
-<h3>Итого: <span id="total">0</span> ₽</h3>
+<div class="pizza">
+<b>Пепперони</b>
+<p>Пепперони + сыр</p>
+<p>500₽</p>
+<button onclick="add('Пепперони',500)">В корзину</button>
+</div>
 
-<h2>💳 Оплата картой</h2>
+<div class="pizza">
+<b>4 сыра</b>
+<p>Сырный микс</p>
+<p>520₽</p>
+<button onclick="add('4 сыра',520)">В корзину</button>
+</div>
+</div>
 
-<input placeholder="Номер карты">
-<input placeholder="MM/YY">
-<input placeholder="CVV">
+<!-- CART -->
+<div class="box">
+<h3>Корзина</h3>
+<div id="cart"></div>
 
-<button onclick="pay()">Оплатить</button>
+<p>Скидка: <span id="discount">0</span>%</p>
+<p>Доставка: <span id="delivery">0</span>₽</p>
+<p><b>Итого: <span id="total">0</span>₽</b></p>
+
+<input id="promo" placeholder="Промокод">
+<button onclick="applyPromo()">Применить</button>
 
 <hr>
 
-<h2>⭐ Отзывы</h2>
+<h4>Оформление</h4>
+<input id="name" placeholder="Имя">
+<input id="phone" placeholder="Телефон">
+<input id="address" placeholder="Адрес">
 
-<textarea id="review"></textarea>
-
-<button onclick="addReview()">Добавить отзыв</button>
-
-<div id="reviews"></div>
+<button onclick="order()">Заказать</button>
 
 <hr>
+<button onclick="clearCart()">Очистить</button>
 
-<h2>📞 Контакты</h2>
+<!-- ADMIN -->
+<button onclick="openAdmin()">Админ</button>
 
-<p>+7 (999) 777-88-99</p>
-<p>Работаем 24/7</p>
+<div class="admin" id="admin">
+<p class="small">Пароль: 1234</p>
+<input id="pass" placeholder="Пароль">
+<button onclick="adminLogin()">Войти</button>
 
-<button onclick="toggleCart()">Закрыть</button>
+<div id="adminPanel" style="display:none">
+<h4>Заказы</h4>
+<div id="orders"></div>
+</div>
+</div>
 
 </div>
+
+</div>
+
 <script>
-let cart=[];
 
-const names=[
-"Сочная Классика","Острая Пепперони","Четыре Сыра","Мясной Монстр",
-"Грибной Лес","Гавайская Взрыв","Морская Легенда","Овощной Бум",
-"Барбекю Бомба","Сырный Удар"
-];
+let cart = [];
+let orders = [];
+let discount = 0;
 
-const descriptions=[
-"Свежая моцарелла, томатный соус и ароматные специи.",
-"Острая пепперони и двойной слой сыра.",
-"Четыре вида сыра на сливочной основе.",
-"Ветчина, бекон и фирменный BBQ соус.",
-"Отборные грибы и нежный сливочный соус.",
-"Сочная ветчина и сладкий ананас.",
-"Креветки и морской коктейль.",
-"Свежие овощи, оливки и кукуруза.",
-"Копчёные колбаски и соус барбекю.",
-"Максимум сыра и золотистая корочка."
-];
-
-for(let i=1;i<=90;i++){
- let price=300+i*10;
- let name=names[(i-1)%names.length]+" №"+i;
- let desc=descriptions[(i-1)%descriptions.length];
-
- document.getElementById('menu').innerHTML+=`
- <div class="card">
-   <h3>${name}</h3>
-   <p>${desc}</p>
-   <b>${price} ₽</b><br><br>
-   <button onclick="addToCart('${name}',${price})">В корзину</button>
- </div>`;
+function add(n,p){
+    cart.push({n,p});
+    render();
 }
 
-function addToCart(name,price){
- if(cart.length>=20){
-   alert('Нельзя добавить больше 20 пицц!');
-   return;
- }
- cart.push({name,price});
- renderCart();
+function render(){
+    let c = document.getElementById("cart");
+    c.innerHTML = "";
+
+    let sum = 0;
+
+    cart.forEach((i,idx)=>{
+        sum += i.p;
+        c.innerHTML += `
+        <div class="cart-item">
+            <span>${i.n} ${i.p}₽</span>
+            <button onclick="remove(${idx})">X</button>
+        </div>`;
+    });
+
+    let delivery = sum > 1200 || sum === 0 ? 0 : 150;
+
+    let total = sum;
+    total -= total * discount / 100;
+    total += delivery;
+
+    document.getElementById("total").innerText = total;
+    document.getElementById("discount").innerText = discount;
+    document.getElementById("delivery").innerText = delivery;
 }
 
-function toggleCart(){
- let p=document.getElementById('cartPanel');
- p.style.display=p.style.display==='block'?'none':'block';
+function remove(i){
+    cart.splice(i,1);
+    render();
 }
 
-function renderCart(){
- let total=0, html='';
-
- cart.forEach((x,i)=>{
-   total+=x.price;
-   html += `${x.name} - ${x.price} ₽ <button onclick="removeItem(${i})">❌</button><br><br>`;
- });
-
- document.getElementById('items').innerHTML=html || 'Пусто';
- document.getElementById('total').textContent=total;
- document.getElementById('count').textContent=cart.length;
+function clearCart(){
+    cart = [];
+    render();
 }
 
-function removeItem(i){
- cart.splice(i,1);
- renderCart();
+function applyPromo(){
+    let code = document.getElementById("promo").value;
+
+    if(code === "PIZZA10") discount = 10;
+    else if(code === "PIZZA20") discount = 20;
+    else discount = 0;
+
+    render();
 }
 
-function pay(){
- if(cart.length===0){
-   alert('Корзина пуста');
-   return;
- }
+function order(){
+    if(cart.length === 0) return alert("Корзина пустая");
 
- alert('Оплата прошла успешно ✅');
- cart=[];
- renderCart();
+    let o = {
+        items: cart,
+        name: name.value,
+        phone: phone.value,
+        address: address.value,
+        time: new Date().toLocaleString()
+    };
+
+    orders.push(o);
+    alert("Заказ оформлен!");
+
+    cart = [];
+    render();
 }
 
-function addReview(){
- let t=document.getElementById('review').value;
- if(!t) return;
-
- document.getElementById('reviews').innerHTML += `<p>⭐ ${t}</p>`;
- document.getElementById('review').value='';
+function openAdmin(){
+    document.getElementById("admin").style.display = "block";
 }
+
+function adminLogin(){
+    if(pass.value === "1234"){
+        adminPanel.style.display = "block";
+        showOrders();
+    } else {
+        alert("Неверно");
+    }
+}
+
+function showOrders(){
+    let o = document.getElementById("orders");
+    o.innerHTML = "";
+
+    orders.forEach((x,i)=>{
+        o.innerHTML += `
+        <div class="pizza">
+            <b>${x.name}</b><br>
+            ${x.phone}<br>
+            ${x.address}<br>
+            <small>${x.time}</small>
+        </div>`;
+    });
+}
+
 </script>
 
 </body>
